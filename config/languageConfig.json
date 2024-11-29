@@ -1,0 +1,5 @@
+{
+    "detectLanguages":["en","zh","ja","ko"],
+    "addChineseWeight": true,
+    "defaultChinese":"zh-yue"
+}
