@@ -1,7 +1,5 @@
 {
     "botName":"KioBot",
     "httpPort":80,
-    "socketPort":3000,
-    "enabledReadMessage":true,
-    "readMessageSpeed": 2
+    "socketPort":3000
 }

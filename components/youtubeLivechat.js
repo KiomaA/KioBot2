@@ -7,7 +7,7 @@ export default class YoutubeLiveChat extends Component {
     fetchTime = new Date();
     constructor(messageHandler){
         super();
-        this.liveChat = new LiveChat({channelId: LiveChat});
+        this.liveChat = new LiveChat({channelId: youtubeConfig.channelId});
         this.messageHandler = messageHandler;
         this.enableOnChat();
 
@@ -60,13 +60,13 @@ export default class YoutubeLiveChat extends Component {
             let username = chatItem.author.name
             let channelId = chatItem.author.channelId
 
-            messageHandler.handleYoutubeMessage(channelId,username,message,chatItem);
+            this.messageHandler.handleYoutubeMessage(channelId,username,message,chatItem);
           }
 
-          liveChat.on('error',async(err)=>{
+          this.liveChat.on('error',async(err)=>{
             //console.log("[ERROR] YT Livestream error")
             console.log(err);
-            this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, `(${botName}) YT Livestream error`);
+            this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, `YT Livestream error`);
           })
       });
       }

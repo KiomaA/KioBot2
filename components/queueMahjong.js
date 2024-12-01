@@ -57,7 +57,7 @@ export default class QueueMahjong extends Component{
             });
         }
         this.queue = [...this.queue, ...params];
-        client.say(messageHandler.defaultChannel,`已移除參加者，目前已排： | Players removed, current in queue:  ${this.queue.join(" ")}`);
+        client.say(messageHandler.defaultChannel,`已移除參加者，目前已排： | Players removed, current in queue:  ${this.queue.join(", ")}`);
     }
 
     clear(client, messageHandler){
@@ -81,7 +81,7 @@ export default class QueueMahjong extends Component{
 
         // return error message if not enough players
         if (this.queue.length < players){
-            client.say(messageHandler.defaultChannel,`不夠人玩啊，現在排隊的有： | Not enough players, current in queue: ${this.queue.join(" ")}`);
+            client.say(messageHandler.defaultChannel,`不夠人玩啊，現在排隊的有： | Not enough players, current in queue: ${this.queue.join(", ")}`);
             return;
         }
 
@@ -96,6 +96,11 @@ export default class QueueMahjong extends Component{
     start5ma(client, messageHandler){
         client.say(messageHandler.defaultChannel,`對唔住喎冇五麻呢樣嘢，最多我咪俾個5ma你囉 <3`);
         playAudioFile('./audio/5ma.mp3');
+    }
+
+    
+    check(client, messageHandler){
+        client.say(messageHandler.defaultChannel,`On queue: ${this.queue.join(", ")}`);
     }
 
 
@@ -127,6 +132,7 @@ export default class QueueMahjong extends Component{
             case "5ma": this.start5ma(client, messageHandler); break;
             case "game": this.startGame(params[0], true, client, messageHandler); break;
             case "gameNs": this.startGame(params[0], false, client, messageHandler); break;
+            case "check": this.check(client, messageHandler); break;
             default: break;
        }
 

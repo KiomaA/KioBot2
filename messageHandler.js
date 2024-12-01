@@ -5,11 +5,14 @@ import MessageFilter from './components/messageFilter.js';
 import ReadMessage from './components/readMessage.js';
 import twitchConfig from './config/twitchConfig.json' assert {type:'json'}
 import youtubeConfig from './config/youtubeConfig.json' assert {type:'json'}
-import botConfig from './config/botConfig.json' assert { type: 'json' }
+//import botConfig from './config/botConfig.json' assert { type: 'json' }
+import languageConfig from './config/languageConfig.json' assert {type:'json'}
 import GoogleSheetHandler from './googleSheetHandler.js';
 import SocketHandler from './socketHandler.js';
 import YoutubeLiveChat from './components/youtubeLivechat.js';
 import QueueMahjong from './components/queueMahjong.js';
+import ChangeNickname from './components/changeNickname.js';
+import TwitchRedemption from './components/twitchRedemtion.js';
 
 
 export default class MessageHandler{
@@ -19,7 +22,9 @@ export default class MessageHandler{
     autoreply = new AutoReply(this.googleSheetHandler);
     messageFilter = new MessageFilter(this.googleSheetHandler);
     detectLanguage = new DetectLanguage();
-    readMessage = new ReadMessage();
+    readMessage = new ReadMessage(languageConfig.enabledReadMessage);
+    changeNickname = new ChangeNickname(this.googleSheetHandler);
+    twitchRedemption = new TwitchRedemption(this.googleSheetHandler);
     queueMahjong = new QueueMahjong();
     
     
@@ -45,9 +50,6 @@ export default class MessageHandler{
     }
 
     async handleMessage(channel,platform,user,name,message,isAdmin,remark){
-        // handle twitch redemption
-        
-
         // filter message
         message = this.messageFilter.filterMessage(message);
 
@@ -56,16 +58,18 @@ export default class MessageHandler{
         //console.log(language);
         
         // change nickname
-        //let {language, name} = this.changeNickname.change(name,lang);
-        let language = lang;
+        let {nickname, language} = this.changeNickname.change(platform,user,name,lang);
+        //let language = lang;
+
+         // handle twitch redemption
+        let msg = this.twitchRedemption.redeem(this.chatClient,channel,platform,name,lang,message,remark);
         
         // read message
-        if (botConfig.enabledReadMessage){
-            await this.readMessage.read(name,message,language)
-        }        
+        await this.readMessage.read(nickname,msg,language)
+     
 
         // auto reply
-        this.autoreply.replyMessage(this.chatClient,channel,message,language,name,user,isAdmin);
+        this.autoreply.replyMessage(this.chatClient,channel,msg,language,nickname,user,isAdmin);
 
 
         // other components
@@ -73,9 +77,9 @@ export default class MessageHandler{
             if (Object.prototype.hasOwnProperty.call(this, key)) {
                 const comp = this[key];
                 if (comp instanceof Component){
-                    comp.handleMessage(this.chatClient,{channel,platform,user,name,message,isAdmin,remark},this)
+                    comp.handleMessage(this.chatClient,{channel,platform,user,nickname,message,isAdmin,remark},this)
                     if (isAdmin){
-                        comp.handleAdminMessage(this.chatClient,{channel,platform,user,name,message,isAdmin,remark},this)
+                        comp.handleAdminMessage(this.chatClient,{channel,platform,user,nickname,message,isAdmin,remark},this)
                     }
                 }
             }

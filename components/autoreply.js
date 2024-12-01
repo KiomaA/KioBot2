@@ -1,7 +1,6 @@
 import parseCommand from "../util/parseCommand.js"
 import Component from "./component.js"
 import {playAudioFile} from 'audic'
-import path from 'path';
 
 
 export default class AutoReply extends Component{
@@ -9,7 +8,7 @@ export default class AutoReply extends Component{
     messageUsers = {}
     messageCount = {}
     soundTime = {}
-    dirname = path.resolve();
+    mute = false;
     
     constructor(googleSheetHandler){
         super();
@@ -112,6 +111,7 @@ export default class AutoReply extends Component{
                 if (reply.once){
                     if (this.messageUsers[reply.type]){
                         if (this.messageUsers[reply.type].includes(user)) continue;
+                        else this.messageUsers[reply.type] = [...this.messageUsers[reply.type],user];
                     }else{
                         this.messageUsers[reply.type] = [user];
                     }
@@ -133,7 +133,7 @@ export default class AutoReply extends Component{
                 client.say(channel,replyText)
 
                 // play audio
-                if (reply.sound){
+                if (!this.mute && reply.sound){
                     // check cooldown time
                     let playsound = true;
                     if (reply.soundCooldown){
@@ -163,10 +163,11 @@ export default class AutoReply extends Component{
        
         let reply = false;
        switch (command){
-            case "add": reply = this.addReply(params)
-
+            //case "add": reply = this.addReply(params)
+            case "update": this.updateReplyList(); reply = "Auto-reply updated"; break;
+            case "mute": this.mute = true; reply = "Auto-reply muted"; break;
+            case "unmute": this.mute = false; reply = "Auto-reply unmuted"; break;
             default: break;
-
        }
 
        if (reply){
