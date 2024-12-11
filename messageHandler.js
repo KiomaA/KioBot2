@@ -44,7 +44,7 @@ export default class MessageHandler{
     }
 
     handleYoutubeMessage(channelId, username, message,channelItem){
-        if (youtubeConfig.ignoreChannels.includes(user)) return;
+        if (youtubeConfig.ignoreChannels.includes(channelId)) return;
         const isAdmin = youtubeConfig.admins.includes(channelId);
         this.handleMessage(this.defaultChannel,'youtube',channelId,username,message,isAdmin,{channelItem:channelItem});
     }

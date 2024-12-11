@@ -5,6 +5,7 @@ import parseCommand from "../util/parseCommand.js"
 
 export default class YoutubeLiveChat extends Component {
     fetchTime = new Date();
+    connected = false;
     constructor(messageHandler){
         super();
         this.liveChat = new LiveChat({channelId: youtubeConfig.channelId});
@@ -18,14 +19,19 @@ export default class YoutubeLiveChat extends Component {
     }
 
     async connect(){
+      if (this.connected) return;
         try {
           const ok = await this.liveChat.start()
+          this.connected = true;
+          console.log("Youtube livechat connected")
           this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Youtube livechat connected");
           //console.log("youtube connected")
           
         } catch (error) {
           //console.log("fetch youtube error")
           console.log(error)
+          this.connect = false;
+          console.log("Unable to connect youtube livechat")
           this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Unable to connect youtube livechat");
           return error
         }
@@ -37,38 +43,40 @@ export default class YoutubeLiveChat extends Component {
           const ok = await this.liveChat.stop()
           this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Youtube livechat disconnected");
           //console.log("youtube disconnected")
+
         } catch (error) {
           //console.log("disconnect youtube error")
           console.log(error)
           this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Unable to disconnect youtube livechat");
           return error
         }
-        return true
+        return true;
       }
 
       enableOnChat(){
         this.liveChat.on("chat", (chatItem) => {
           // process new messages only
           if (chatItem.timestamp >= this.fetchTime){   
-            console.log(chatItem.message)
+           // console.log(chatItem.message)
             let message = "";
-            if (chatItem.message[0]){
-              if (chatItem.message[0].text){
-                message = chatItem.message[0].text
-              }   
-            }
+
+            chatItem.message.forEach(msg => {
+              if (msg.text) message += msg.text;
+              if (msg.emojiText) message += msg.emojiText;
+            });
+
             let username = chatItem.author.name
             let channelId = chatItem.author.channelId
 
             this.messageHandler.handleYoutubeMessage(channelId,username,message,chatItem);
           }
+        });
 
-          this.liveChat.on('error',async(err)=>{
-            //console.log("[ERROR] YT Livestream error")
-            console.log(err);
-            this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, `YT Livestream error`);
-          })
-      });
+        this.liveChat.on('error',async(err)=>{
+          //console.log("[ERROR] YT Livestream error")
+          console.log(err);
+          this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, `YT Livestream error`);
+        });
       }
 
       handleAdminMessage(client,message,messageHandler){

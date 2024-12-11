@@ -3,7 +3,6 @@ import { ChatClient } from '@twurple/chat';
 import twitchCredentials from './credentials/twitchCredentials.json' assert { type: 'json' }
 import twitchConfig from './config/twitchConfig.json' assert { type: 'json' }
 import MessageHandler from './messageHandler.js';
-import express from 'express';
 import { promises as fs } from 'fs';
 import { Bot } from '@twurple/easy-bot';
 // import { ApiClient } from '@twurple/api';
@@ -13,9 +12,6 @@ const clientId = twitchCredentials.id;
 const clientSecret = twitchCredentials.secret;
 
 //const accessToken =  twitchCredentials.token;
-
-// express app
-const app = express();
 
 // twitch chat auth
 const tokenData = JSON.parse(await fs.readFile(`./tokens/tokens.${twitchCredentials.bot}.json`, 'utf-8'));
@@ -38,8 +34,6 @@ const mainChannel = twitchConfig.channels[0]
 const messageHandler = new MessageHandler(chatClient,mainChannel)
 
 chatClient.onMessage(async (channel, user, text, msg) => {
-    //console.log(msg.isRedemption)
-    //console.log(msg.rewardId)
     messageHandler.handleTwitchMessage(channel,user,text,msg);
 });
 

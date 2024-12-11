@@ -24,19 +24,22 @@ export default class DetectLanguage extends Component{
             }
 
             if (scores.zh && !message.match(/[\u3040-\u30FF\u31F0-\u31FF]/)){
-               scores.zh *= 2.5;
+               scores.zh *= 5;
             }
             try{
             language = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
             }catch(err){}
         }
-        //console.log(scores)
+        
 
         if (!languageConfig.detectLanguages){
             language = "en"
         }else if (!languageConfig.detectLanguages.includes(language)){
             language = languageConfig.detectLanguages[0];
         }
+
+        console.log(scores)
+        console.log(language)
         return language;
     }
 }

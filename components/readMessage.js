@@ -1,18 +1,20 @@
 import languageConfig from './../config/languageConfig.json' assert {type:'json'}
 import gTTS from 'gtts'
 import Component from './component.js';
-import Audic from 'audic';
-//import botConfig from './../config/botConfig.json' assert { type: 'json' }
 import ffmpeg from 'fluent-ffmpeg';
-import { unlink } from 'fs/promises';
 import parseCommand from "../util/parseCommand.js"
+import { mkdirSync, rmSync } from 'fs';
+
 
 export default class ReadMessage extends Component{
     fileCount = 0
+    volume = 0.7
     queue = []
     constructor(enabled){
         super();
         this.enabled = !!enabled;
+        rmSync('./temp',{recursive:true, force:true});
+        mkdirSync('./temp');
     }
 
     async read(name,message,language){
@@ -28,32 +30,32 @@ export default class ReadMessage extends Component{
 
         //console.log(language)
         const gtts = new gTTS(name+": "+message, language);
-        const fileName = `./temp/${count}.mp3`;
-        gtts.save(fileName, function (err, result) {
+        const fileName = `/temp/${count}.mp3`;
+        const volume = this.volume;
+        const io  = this.io;
+        const tempo = languageConfig.readMessageSpeed[language]? languageConfig.readMessageSpeed[language]:1.5
+
+        gtts.save('.'+fileName, function (err, result) {
             if (err) console.log(err)
-            ffmpeg().addInput(fileName).audioFilters("atempo="+languageConfig.readMessageSpeed[language]).output(fileName+"_p.mp3").on('end', function() {
-                unlink(fileName);
+            let duration = 10;
+            
+            ffmpeg.ffprobe('.'+fileName, function(err, metadata) {
+                //console.dir(metadata); // all metadata
+                duration = metadata.format.duration / tempo;
+            });           
+            
+            ffmpeg().addInput('.'+fileName).audioFilters([`volume=volume=${volume}`,`atempo=${tempo}`]).output('.'+fileName+"_p.mp3").on('end', function() {
+                //unlink(fileName);
+                io.emit('read',{file:fileName+"_p.mp3", duration:duration});
               }).run();
         });
-        this.queue.push(fileName+"_p.mp3");
-        if (this.queue.length == 1){
-            await this.playAudio()
-        }
     }
 
-    async playAudio(){
-        const file = this.queue[0];
-        const audic = new Audic(file);
-        audic.addEventListener('ended', async () => {
-            this.queue.shift();
-            //console.log(`finish playing ${file}`)
-            audic.destroy();
-            unlink(file);
-            if (this.queue.length != 0){
-                await this.playAudio();
-            }
-        });
-        await audic.play()
+    setVolume(params){
+        let volume = Number(params[0]);
+        if (isNaN(volume)) return "Invalid volume value";
+        if (volume < 0) return "Invalid volume value";
+        this.volume = volume;
     }
 
 
@@ -65,6 +67,7 @@ export default class ReadMessage extends Component{
        switch (command){
             case "enable": this.enabled = true; reply = "Read message enabled"; break;
             case "disable": this.enabled = false; reply = "Read message disabled"; break;
+            case "volume": reply = this.setVolume(params); break;
             default: break;
        }
 
@@ -75,5 +78,8 @@ export default class ReadMessage extends Component{
 
     }
 
+    handleSocket(socket,io,messageHandler){
+        return;
+    }
 
 }

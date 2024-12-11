@@ -17,7 +17,7 @@ export default class TwitchRedemption extends Component{
         let list = {};
         rows.forEach((row)=>{
             const rawData = row._rawData
-            list[rawData[0]] = {zh:rawData[1], en:rawData[2], ja:rawData[3], ko:rawData[4]} 
+            list[rawData[0]] = {zh:rawData[1], en:rawData[2], ja:rawData[3], ko:rawData[4], duration:rawData[5]} 
         })
         this.rewards = list
     }
@@ -29,6 +29,8 @@ export default class TwitchRedemption extends Component{
         if (!remark.chatMessage.isRedemption) return msg;
         if (!remark.chatMessage.rewardId) return msg;
         if (!this.rewards[remark.chatMessage.rewardId]) return msg;
+
+        //console.log(remark.chatMessage.rewardId)
 
         let item = this.rewards[remark.chatMessage.rewardId];
         let message = msg;        
@@ -68,6 +70,16 @@ export default class TwitchRedemption extends Component{
             rewardNameEn = item.en;
         }       
         chatClient.say(channel,`感謝 ${name} 兌換${rewardNameZh}！ Thanks ${name} for redeeming ${rewardNameEn}!`)
+
+        if (item.duration){
+            let duration = Number(item.duration);
+            if (!isNaN(duration)){
+                setTimeout(()=>{
+                    chatClient.say(channel,`兌換${rewardNameZh}時間已到！`)
+
+                },duration*60*1000)
+            }
+        }
 
         return message;
     }

@@ -1,5 +1,6 @@
 import parseCommand from "../util/parseCommand.js"
 import Component from "./component.js"
+import languageConfig from './../config/languageConfig.json' assert {type:'json'}
 
 
 export default class ChangeNickname extends Component{
@@ -9,8 +10,28 @@ export default class ChangeNickname extends Component{
     constructor(googleSheetHandler){
         super();
         this.googleSheetHandler = googleSheetHandler;
-        this.updateTwitchNameList();
-        this.updateYoutubehNameList();
+        this.updateNameList();
+    }
+
+    async updateNameList(){
+        const sheet = await this.googleSheetHandler.getSheet("nicknames");
+        const rows = await sheet.getRows();
+        let twList = {};
+        let ytList = {};
+        
+        rows.forEach((row)=>{
+            const rawData = row._rawData
+            let chinese_pronounce  = false;
+            if ( rawData[3].includes("Cantonese")) chinese_pronounce = "zh-yue";
+            else if (rawData[3].includes("Mandarin")) chinese_pronounce = "zh-tw";
+
+            if (rawData[1]) twList[rawData[1]] = {chinese_pronounce:chinese_pronounce, zh:rawData[4], en:rawData[5], ja:rawData[6], ko:rawData[7]} ;
+            if (rawData[2]) ytList[rawData[2]] = {chinese_pronounce:chinese_pronounce, zh:rawData[4], en:rawData[5], ja:rawData[6], ko:rawData[7]} ;
+               
+        })
+        
+        this.twitchNames = twList;
+        this.youtubeNames = ytList;  
     }
 
     async updateTwitchNameList(){
@@ -42,12 +63,12 @@ export default class ChangeNickname extends Component{
 
         // find name from twitch or youtube name list
         if (platform == "twitch"){
-            if (!this.twitchNames[user]) return {name,lang};
+            if (!this.twitchNames[user]) return {nickname,language};
             item = this.twitchNames[user];
         }else if (platform == "youtube"){
-            if (!this.youtubeNames[user]) return {name,lang};
+            if (!this.youtubeNames[user]) return {nickname,language};
             item = this.youtubeNames[user]
-        }else return {name,lang};
+        }else return {nickname,language};
 
         //console.log(item)
 
@@ -79,6 +100,8 @@ export default class ChangeNickname extends Component{
         if (item.chinese_pronounce && lang == "zh"){
             if (item.chinese_pronounce == "zh-tw" || item.chinese_pronounce == "zh-yue"){
                 language = item.chinese_pronounce;
+            }else{
+                language = languageConfig.defaultChinese;
             }
         }
         return {nickname, language}
@@ -91,7 +114,7 @@ export default class ChangeNickname extends Component{
         let reply = false;
        switch (command){
             //case "add": reply = this.addReply(params)
-            case "update": this.updateTwitchNameList(); this.updateYoutubehNameList(); reply = "Nickname list updated"; break;
+            case "update": this.updateNameList(); reply = "Nickname list updated"; break;
             default: break;
        }
 

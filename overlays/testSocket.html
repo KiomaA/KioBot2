@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p id="message"></p>
+</body>
+<script src="/overlays/js/socket.io.min.js"></script>
+<script>
+    const socket = io("localhost:3000");
+    socket.onAny((event, ...args) => {
+        document.querySelector("#message").innerHTML = `${event} ${JSON.stringify(args)}`;
+    });
+
+</script>
+</html>

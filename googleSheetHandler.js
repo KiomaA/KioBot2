@@ -14,7 +14,7 @@ export default class GoogleSheetHandler{
           });
           this.doc = new GoogleSpreadsheet(googleSheetConfig.sheetId, serviceAccountAuth);
 
-          console.log(`Spreadsheet loaded, edit spreadsheet on https://docs.google.com/spreadsheets/d/${googleSheetConfig.sheetId} and run !sheet.update after update`)
+          console.log(`Spreadsheet loaded, edit spreadsheet on https://docs.google.com/spreadsheets/d/${googleSheetConfig.sheetId} and run !xxx.update for each component updated`)
           
     }
     async getSheet(sheetName){

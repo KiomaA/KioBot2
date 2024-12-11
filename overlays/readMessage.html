@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Read message</title>
+</head>
+<body>
+    <p id="message"></p>
+</body>
+<script src="/overlays/js/socket.io.min.js"></script>
+<script>
+    let queue = [];
+
+    const socket = io("localhost:3000");
+    socket.on('read',(message)=>{
+        //document.querySelector("#message").innerHTML = JSON.stringify(message);
+        queue.push(message);
+        //console.log(queue);
+        if (queue.length == 1){
+            playAudio();           
+        }
+    })
+
+    const playAudio = ()=>{
+        if (queue.length == 0) return;
+        let file = queue[0]
+        let fileName = file.file;
+        let duration = file.duration;
+
+        // document.querySelector("#play").setAttribute("src",fileName);
+        // await document.querySelector("#play").play()
+
+        var audio = new Audio(fileName);
+        audio.play();
+
+        setTimeout(()=>{
+            console.log("play "+fileName+"finished")
+            queue.shift();
+            playAudio()
+        }, duration*1000)
+    }
+
+</script>
+</html>
