@@ -3,5 +3,6 @@
     "detectLanguages":["en","zh","ja","ko"],
     "addChineseWeight": true,
     "defaultChinese":"zh-yue",
-    "readMessageSpeed": {"zh-yue":2, "zh-tw":2, "en":1.7, "ja":1.5, "ko":1.5}
+    "readMessageSpeed": {"zh-yue":2, "zh-tw":2, "en":1.7, "ja":1.5, "ko":1.5},
+    "readUrl": false
 }

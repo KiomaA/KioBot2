@@ -29,7 +29,11 @@ export default class ReadMessage extends Component{
             }           
 
         //console.log(language)
-        const gtts = new gTTS(name+": "+message, language);
+
+        let mes = message;
+        if (!languageConfig.readUrl) mes = mes.replace(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm, "URL")
+
+        const gtts = new gTTS(name+": "+mes, language);
         const fileName = `/temp/${count}.mp3`;
         const volume = this.volume;
         const io  = this.io;
