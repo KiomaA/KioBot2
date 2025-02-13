@@ -38,8 +38,8 @@ export default class DetectLanguage extends Component{
             language = languageConfig.detectLanguages[0];
         }
 
-        console.log(scores)
-        console.log(language)
+        // console.log(scores)
+        // console.log(language)
         return language;
     }
 }

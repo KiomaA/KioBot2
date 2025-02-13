@@ -22,6 +22,17 @@
         }
     })
 
+    socket.on('autoreply',(message)=>{
+        //document.querySelector("#message").innerHTML = JSON.stringify(message);
+        console.log(message);
+        if (message.file) playReplyAudio(message.file);
+    })
+
+    const playReplyAudio = (file)=>{
+        var replyAudio = new Audio(file);
+        replyAudio.play();
+    }
+
     const playAudio = ()=>{
         if (queue.length == 0) return;
         let file = queue[0]

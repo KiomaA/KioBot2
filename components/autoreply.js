@@ -1,6 +1,6 @@
 import parseCommand from "../util/parseCommand.js"
 import Component from "./component.js"
-import {playAudioFile} from 'audic'
+// import {playAudioFile} from 'audic'
 
 
 export default class AutoReply extends Component{
@@ -38,49 +38,10 @@ export default class AutoReply extends Component{
             let cooldown = Number(rawData[7]);
             if (isNaN(cooldown)) cooldown = 0;
 
-            return {message: rawData[0], type: rawData[1], reply: rawData[2], ignoreAdmin:!!rawData[3], once:!!rawData[4], exceptions:exceptions, sound:rawData[6], soundCooldown:cooldown, replyLanguages:replyLanguages,skipLanguages:skipLanguages, disabled:!!rawData[10]} 
+            return {message: rawData[0], type: rawData[1], reply: rawData[2], ignoreAdmin:!!rawData[3], once:!!rawData[4], exceptions:exceptions, sound:rawData[6], soundCooldown:cooldown, replyLanguages:replyLanguages,skipLanguages:skipLanguages, disabled:!!rawData[10], subscriberReply:rawData[11], subscriberUniqueSound:!!rawData[12],} 
         })
         this.replies = replies
         //console.log(this.replies);
-    }
-
-    addReply(params){        
-        console.log(params)
-        if (params.length <3) return "Add autoreply failed: Not enough parameters";
-
-        let row = {message:params[0], type:params[1], reply:params[2]}
-
-        // look for other params
-        if (params.length > 3){
-            for (let i=3; i<params.length; i++){
-                const param = params[i]
-                switch(param){
-                    case "--ignoreAdmin": row.ignoreAdmin = true; break;
-                    case "--once": row.once = true; break;
-                    case "--exceptions": if (params[i+1]){row.exceptions = params[i+1].split(",")} break;
-                    case "--sound": if (params[i+1]){row.sound = params[i+1]} break;
-                    case "--soundCooldown": if (params[i+1]){row.soundCooldown = params[i+1]} break;
-                    case "--replyLanguages": if (params[i+1]){row.replyLanguages = params[i+1].split(",")} break;
-                    case "--skipLanguages": if (params[i+1]){row.skipLanguages = params[i+1].split(",")} break;
-                    case "--disabled": row.disabled = true; break;
-                    default: break;
-                }
-
-            }
-        }
-
-        console.log(row)
-
-
-      
-    }
-
-    async addReplyExceptions(params){
-
-    }
-
-    async disableMessageReply(params){
-
     }
 
     replyMessage(client,channel,message,language,name,user,isAdmin){
@@ -136,6 +97,8 @@ export default class AutoReply extends Component{
                 if (!this.mute && reply.sound){
                     // check cooldown time
                     let playsound = true;
+                    let sound = reply.sound;
+
                     if (reply.soundCooldown){
                       if (!this.soundTime[reply.type]){
                         this.soundTime[reply.type] = new Date().getTime() / 1000;
@@ -150,8 +113,11 @@ export default class AutoReply extends Component{
                       }
                     }     
                     if (playsound){
-                      playAudioFile('./audio/'+reply.sound);
+                      this.io.emit('autoreply',{file:'/audio/'+sound})
+                    //   playAudioFile('./audio/'+reply.sound);
                     }
+
+
                   }
             }
         }

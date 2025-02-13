@@ -14,6 +14,7 @@ export default class SocketHandler{
 
         app.use('/overlays',express.static('./overlays'));
         app.use('/temp',express.static('./temp'));
+        app.use('/audio',express.static('./audio'));
 
 
         server.listen(botConfig.socketPort,()=>{console.log(`created server on http://localhost:${botConfig.socketPort}`);})

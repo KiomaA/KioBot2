@@ -6,12 +6,10 @@ import parseCommand from "../util/parseCommand.js"
 export default class YoutubeLiveChat extends Component {
     fetchTime = new Date();
     connected = false;
+    initiated = false;
     constructor(messageHandler){
         super();
-        this.liveChat = new LiveChat({channelId: youtubeConfig.channelId});
         this.messageHandler = messageHandler;
-        this.enableOnChat();
-
         if (youtubeConfig.enableAtStart){
           this.connect();
         }
@@ -21,10 +19,16 @@ export default class YoutubeLiveChat extends Component {
     async connect(){
       if (this.connected) return;
         try {
+          this.liveChat = new LiveChat({channelId: youtubeConfig.channelId});
+          this.enableOnChat();
           const ok = await this.liveChat.start()
           this.connected = true;
+          if (!this.initiated){
+            this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Youtube livechat connected");
+            this.initiated = true
+          }
           console.log("Youtube livechat connected")
-          this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Youtube livechat connected");
+          
           //console.log("youtube connected")
           
         } catch (error) {
@@ -33,6 +37,7 @@ export default class YoutubeLiveChat extends Component {
           this.connect = false;
           console.log("Unable to connect youtube livechat")
           this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Unable to connect youtube livechat");
+          await this.disconnect();
           return error
         }
         return true
@@ -41,6 +46,7 @@ export default class YoutubeLiveChat extends Component {
       async disconnect(){
         try {
           const ok = await this.liveChat.stop()
+          delete this.liveChat;
           this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Youtube livechat disconnected");
           //console.log("youtube disconnected")
 
@@ -76,6 +82,7 @@ export default class YoutubeLiveChat extends Component {
           //console.log("[ERROR] YT Livestream error")
           console.log(err);
           this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, `YT Livestream error`);
+          await this.disconnect();
         });
       }
 

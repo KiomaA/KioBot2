@@ -1,4 +1,5 @@
 import Component from "./component.js";
+import parseCommand from "../util/parseCommand.js"
 
 export default class MessageFilter extends Component{
     filters = []
@@ -28,5 +29,24 @@ export default class MessageFilter extends Component{
         }
         return filteredMessage;
     }
+
+
+    handleAdminMessage(client,message,messageHandler){
+            if (!message.message.match(/^!filter/)) return;
+            const {command, params} = parseCommand(message.message, true);
+           
+            let reply = false;
+           switch (command){
+                //case "add": reply = this.addReply(params)
+                case "update": this.updateFilter(); reply = "Filter updated"; break;
+                default: break;
+           }
+    
+           if (reply){
+            console.log(reply)
+            client.say(message.channel, reply)
+           }
+    
+        }
 
 }

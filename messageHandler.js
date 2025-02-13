@@ -13,6 +13,7 @@ import YoutubeLiveChat from './components/youtubeLivechat.js';
 import QueueMahjong from './components/queueMahjong.js';
 import ChangeNickname from './components/changeNickname.js';
 import TwitchRedemption from './components/twitchRedemtion.js';
+import RestreamBotChat from './components/restreamBotChat.js';
 
 
 export default class MessageHandler{
@@ -35,11 +36,16 @@ export default class MessageHandler{
         this.chatClient = chatClient 
         this.defaultChannel = defaultChannel       
         this.youtubeLiveChat = new YoutubeLiveChat(this);
+        this.restreamBotChat = new RestreamBotChat(this)
     }
 
     handleTwitchMessage(channel, user, text, msg){
-        if (twitchConfig.ignoreChannels.includes(user)) return;
         const isAdmin = twitchConfig.admins.includes(user)
+        if (twitchConfig.restreamBot.includes(user)){
+            this.restreamBotChat.handleRestreamMessage(text,msg);
+            return;
+        }else 
+        if (twitchConfig.ignoreChannels.includes(user)) return;
         this.handleMessage(channel,'twitch',user,msg.userInfo.displayName, text, isAdmin, {chatMessage:msg});
     }
 
