@@ -17,7 +17,7 @@ export default class TwitchRedemption extends Component{
         let list = {};
         rows.forEach((row)=>{
             const rawData = row._rawData
-            list[rawData[0]] = {zh:rawData[1], en:rawData[2], ja:rawData[3], ko:rawData[4], duration:rawData[5]} 
+            list[rawData[0]] = {zh:rawData[1], en:rawData[2], ja:rawData[3], ko:rawData[4], duration:rawData[5], vipOnly:!!rawData[6], subOnly:!!rawData[7], endSound:rawData[8]} 
         })
         this.rewards = list
     }
@@ -28,14 +28,44 @@ export default class TwitchRedemption extends Component{
         if (!remark.chatMessage) return msg;
         if (!remark.chatMessage.isRedemption) return msg;
         if (!remark.chatMessage.rewardId) return msg;
-        if (!this.rewards[remark.chatMessage.rewardId]) return msg;
-
-        //console.log(remark.chatMessage.rewardId)
+        if (!this.rewards[remark.chatMessage.rewardId]) {
+            console.log(`unlisted reward: ${remark.chatMessage.rewardId}`)
+            return msg;
+        }   
 
         let item = this.rewards[remark.chatMessage.rewardId];
         let message = msg;        
 
         let rewardName = false;
+
+        //console.log(remark.chatMessage.userInfo.isMod)
+        //console.log(remark.chatMessage.userInfo.isSubscriber)
+        //console.log(remark.chatMessage.userInfo.isVip)
+
+
+        let validReward = false;
+
+        
+        if (item.vipOnly && remark.chatMessage.userInfo.isVip){
+            validReward = true;
+         }else{
+             message = "本獎勵只限VIP兌換，請聯絡台主退還點數。 This reward is for VIP only. Please contact streamer to return your points.";
+         }
+
+
+        if (item.subOnly && remark.chatMessage.userInfo.isSubscriber){
+            validReward = true;
+         }else{
+             message = "本獎勵只限訂閲者兌換，請聯絡台主退還點數。 This reward is for subscribers only. Please contact streamer to return your points.";
+        }
+
+        if (!item.vipOnly && !item.subOnly) validReward = true;
+
+        if (!validReward){
+            chatClient.say(channel,message);
+            return message;
+        }
+        
 
         switch (lang){
             case "zh": 
@@ -73,9 +103,14 @@ export default class TwitchRedemption extends Component{
 
         if (item.duration){
             let duration = Number(item.duration);
+            let io = this.io;
             if (!isNaN(duration)){
                 setTimeout(()=>{
-                    chatClient.say(channel,`兌換${rewardNameZh}時間已到！`)
+                    chatClient.say(channel,`兌換${rewardNameZh}時間已到！ Time's up for reward ${rewardNameEn}!`)
+
+                    if (item.endSound){
+                        io.emit('autoreply',{file:'/audio/'+item.endSound})
+                    }
 
                 },duration*60*1000)
             }

@@ -68,7 +68,7 @@ export default class MessageHandler{
         //let language = lang;
 
          // handle twitch redemption
-        let msg = this.twitchRedemption.redeem(this.chatClient,channel,platform,name,lang,message,remark);
+        let msg = this.twitchRedemption.redeem(this.chatClient,channel,platform,nickname,lang,message,remark);
         
         // read message
         await this.readMessage.read(nickname,msg,language)

@@ -1,6 +1,6 @@
 import Component from "./component.js";
 import parseCommand from "../util/parseCommand.js"
-import {playAudioFile} from 'audic'
+// import {playAudioFile} from 'audic'
 
 export default class QueueMahjong extends Component{
     enabled = false;
@@ -15,6 +15,7 @@ export default class QueueMahjong extends Component{
             this.queue.push(name);
             client.say(messageHandler.defaultChannel, `謝謝 ${name} 加入！目前已排： | Thanks ${name} for joining! Currently on queue: ${this.queue.join(" ")}`);
             console.log(this.queue);
+            this.io.emit('mah',{queue:this.queue})
         }else{
             client.say(messageHandler.defaultChannel, `${name} 已排 | ${name} is already on queue`);   
         }       
@@ -38,6 +39,7 @@ export default class QueueMahjong extends Component{
         }
         client.say(messageHandler.defaultChannel,`${params.join(", ")} 歡迎加入排隊！ Thanks for joining queue!`);
         console.log(this.queue);
+        this.io.emit('mah',{queue:this.queue})
     }
 
     remove(params, byIndex, client, messageHandler){
@@ -58,11 +60,13 @@ export default class QueueMahjong extends Component{
         }
         this.queue = [...this.queue, ...params];
         client.say(messageHandler.defaultChannel,`已移除參加者，目前已排： | Players removed, current in queue:  ${this.queue.join(", ")}`);
+        this.io.emit('mah',{queue:this.queue})
     }
 
     clear(client, messageHandler){
         this.queue = [];
         client.say(messageHandler.defaultChannel,`已清空排隊 Queue cleared`);
+        this.io.emit('mah',{queue:this.queue})
     }
 
     startGame(params, includeStreamer, client, messageHandler){
@@ -91,11 +95,13 @@ export default class QueueMahjong extends Component{
         }
 
         client.say(messageHandler.defaultChannel,`${playerNames.join(", ")} 請加入友人場！ Please enter game!`)
+        this.io.emit('mah',{queue:this.queue})
     }
 
     start5ma(client, messageHandler){
-        client.say(messageHandler.defaultChannel,`對唔住喎冇五麻呢樣嘢，最多我咪俾個5ma你囉 <3`);
-        playAudioFile('./audio/5ma.mp3');
+        client.say(messageHandler.defaultChannel,`對唔住喎冇五麻呢樣嘢，最多咪俾個5ma你囉 <3`);
+        this.io.emit('autoreply',{file:'/audio/5ma.mp3'})
+        // playAudioFile('./audio/5ma.mp3');
     }
 
     
@@ -110,7 +116,7 @@ export default class QueueMahjong extends Component{
         // add player to queue if enabled and received +1
         if (this.enabled){
             if (message.message.includes("+1")){
-                this.playerJoin(message.name, client, messageHandler);
+                this.playerJoin(message.nickname, client, messageHandler);
             }
         }
     }
