@@ -1,5 +1,5 @@
 import Component from "./component.js";
-import youtubeConfig from "./../config/youtubeConfig.json" assert {type: "json"}
+import youtubeConfig from "./../config/youtubeConfig.json" with {type: "json"}
 import {LiveChat} from 'youtube-chat'
 import parseCommand from "../util/parseCommand.js"
 

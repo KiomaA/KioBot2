@@ -1,6 +1,6 @@
 import parseCommand from "../util/parseCommand.js"
 import Component from "./component.js"
-import languageConfig from './../config/languageConfig.json' assert {type:'json'}
+import languageConfig from './../config/languageConfig.json' with {type:'json'}
 
 
 export default class ChangeNickname extends Component{

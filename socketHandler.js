@@ -2,7 +2,7 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io'; 
 
-import botConfig from './config/botConfig.json' assert {type:'json'}
+import botConfig from './config/botConfig.json' with {type:'json'}
 import Component from "./components/component.js";
 export default class SocketHandler{
     constructor(messageHandler){
