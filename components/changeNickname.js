@@ -6,6 +6,7 @@ import languageConfig from './../config/languageConfig.json' with {type:'json'}
 export default class ChangeNickname extends Component{
     twitchNames = {}
     youtubeNames = {}
+    restreamNames = {}
 
     constructor(googleSheetHandler){
         super();
@@ -18,43 +19,45 @@ export default class ChangeNickname extends Component{
         const rows = await sheet.getRows();
         let twList = {};
         let ytList = {};
+        let rsList = {};
         
         rows.forEach((row)=>{
             const rawData = row._rawData
-            let chinese_pronounce  = false;
+            let chinese_pronounce  = "";
             if ( rawData[3].includes("Cantonese")) chinese_pronounce = "zh-yue";
             else if (rawData[3].includes("Mandarin")) chinese_pronounce = "zh-tw";
 
             if (rawData[1]) twList[rawData[1]] = {chinese_pronounce:chinese_pronounce, zh:rawData[4], en:rawData[5], ja:rawData[6], ko:rawData[7]} ;
             if (rawData[2]) ytList[rawData[2]] = {chinese_pronounce:chinese_pronounce, zh:rawData[4], en:rawData[5], ja:rawData[6], ko:rawData[7]} ;
-               
+            if (rawData[8]) rsList[rawData[8]] = {chinese_pronounce:chinese_pronounce, zh:rawData[4], en:rawData[5], ja:rawData[6], ko:rawData[7]} ;
         })
         
         this.twitchNames = twList;
         this.youtubeNames = ytList;  
+        this.restreamNames = rsList;
     }
 
-    async updateTwitchNameList(){
-        const sheet = await this.googleSheetHandler.getSheet("twitch_names");
-        const rows = await sheet.getRows();
-        let list = {};
-        rows.forEach((row)=>{
-            const rawData = row._rawData
-            list[rawData[0]] = {chinese_pronounce:rawData[1], zh:rawData[2], en:rawData[3], ja:rawData[4], ko:rawData[5]} 
-        })
-        this.twitchNames = list
-    }
+    // async updateTwitchNameList(){
+    //     const sheet = await this.googleSheetHandler.getSheet("twitch_names");
+    //     const rows = await sheet.getRows();
+    //     let list = {};
+    //     rows.forEach((row)=>{
+    //         const rawData = row._rawData
+    //         list[rawData[0]] = {chinese_pronounce:rawData[1], zh:rawData[2], en:rawData[3], ja:rawData[4], ko:rawData[5]} 
+    //     })
+    //     this.twitchNames = list
+    // }
 
-    async updateYoutubehNameList(){
-        const sheet = await this.googleSheetHandler.getSheet("yt_names");
-        const rows = await sheet.getRows();
-        let list = {};
-        rows.forEach((row)=>{
-            const rawData = row._rawData
-            list[rawData[0]] = {chinese_pronounce:rawData[1], zh:rawData[2], en:rawData[3], ja:rawData[4], ko:rawData[5]} 
-        })
-        this.youtubeNames = list
-    }
+    // async updateYoutubehNameList(){
+    //     const sheet = await this.googleSheetHandler.getSheet("yt_names");
+    //     const rows = await sheet.getRows();
+    //     let list = {};
+    //     rows.forEach((row)=>{
+    //         const rawData = row._rawData
+    //         list[rawData[0]] = {chinese_pronounce:rawData[1], zh:rawData[2], en:rawData[3], ja:rawData[4], ko:rawData[5]} 
+    //     })
+    //     this.youtubeNames = list
+    // }
 
     change(platform,user,name,lang){
         let item = {}
@@ -68,7 +71,11 @@ export default class ChangeNickname extends Component{
         }else if (platform == "youtube"){
             if (!this.youtubeNames[user]) return {nickname,language};
             item = this.youtubeNames[user]
-        }else return {nickname,language};
+        }else if (platform == "restreambot") {
+            if (!this.restreamNames[name]) return {nickname,language};
+            item = this.restreamNames[name]
+        }
+        else return {nickname,language};
 
         //console.log(item)
 
