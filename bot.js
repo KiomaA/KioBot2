@@ -1,7 +1,7 @@
 import { RefreshingAuthProvider } from '@twurple/auth';
 import { ChatClient } from '@twurple/chat';
-import twitchCredentials from './credentials/twitchCredentials.json' assert { type: 'json' }
-import twitchConfig from './config/twitchConfig.json' assert { type: 'json' }
+import twitchCredentials from './credentials/twitchCredentials.json' with { type: 'json' }
+import twitchConfig from './config/twitchConfig.json' with { type: 'json' }
 import MessageHandler from './messageHandler.js';
 import { promises as fs } from 'fs';
 import { Bot } from '@twurple/easy-bot';

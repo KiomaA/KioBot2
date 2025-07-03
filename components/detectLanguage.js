@@ -1,4 +1,4 @@
-import languageConfig from './../config/languageConfig.json' assert {type:'json'}
+import languageConfig from './../config/languageConfig.json' with {type:'json'}
 import { eld } from 'eld'
 import Component from './component.js';
 export default class DetectLanguage extends Component{

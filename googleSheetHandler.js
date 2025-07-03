@@ -1,5 +1,5 @@
-import googleSheetConfig from './config/googleSheetConfig.json' assert {type: "json"}
-import googleCredentials from './credentials/googleCredentials.json' assert {type: "json"}
+import googleSheetConfig from './config/googleSheetConfig.json' with {type: "json"}
+import googleCredentials from './credentials/googleCredentials.json' with {type: "json"}
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
 

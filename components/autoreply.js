@@ -60,8 +60,8 @@ export default class AutoReply extends Component{
 
                 // skip if exception
                 let skip = false
-                for (const exception of reply.exceptions) {
-                    if(message.toLowerCase().includes(exception)){
+                for (const exc of reply.exceptions) {
+                    if(message.toLowerCase().includes(exc)){
                         skip = true;
                         break;
                     }

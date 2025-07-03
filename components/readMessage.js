@@ -1,5 +1,5 @@
-import languageConfig from './../config/languageConfig.json' assert {type:'json'}
-import botConfig from "./../config/botConfig.json" assert {type: "json"}
+import languageConfig from './../config/languageConfig.json' with {type:'json'}
+import botConfig from "./../config/botConfig.json" with {type: "json"}
 import gTTS from 'gtts'
 import Component from './component.js';
 import ffmpeg from 'fluent-ffmpeg';

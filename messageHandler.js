@@ -3,10 +3,10 @@ import Component from './components/component.js';
 import DetectLanguage from './components/detectLanguage.js';
 import MessageFilter from './components/messageFilter.js';
 import ReadMessage from './components/readMessage.js';
-import twitchConfig from './config/twitchConfig.json' assert {type:'json'}
-import youtubeConfig from './config/youtubeConfig.json' assert {type:'json'}
-//import botConfig from './config/botConfig.json' assert { type: 'json' }
-import languageConfig from './config/languageConfig.json' assert {type:'json'}
+import twitchConfig from './config/twitchConfig.json' with {type:'json'}
+import youtubeConfig from './config/youtubeConfig.json' with {type:'json'}
+//import botConfig from './config/botConfig.json' with { type: 'json' }
+import languageConfig from './config/languageConfig.json' with {type:'json'}
 import GoogleSheetHandler from './googleSheetHandler.js';
 import SocketHandler from './socketHandler.js';
 import YoutubeLiveChat from './components/youtubeLivechat.js';
