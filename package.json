@@ -21,7 +21,6 @@
     "@twurple/easy-bot": "^7.2.0",
     "@twurple/eventsub-ws": "^7.2.0",
     "@twurple/pubsub": "^7.2.0",
-    "audic": "^3.0.2",
     "eld": "^1.0.1",
     "express": "^4.21.1",
     "fluent-ffmpeg": "^2.1.3",

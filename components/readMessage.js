@@ -1,7 +1,11 @@
 import languageConfig from './../config/languageConfig.json' with {type:'json'}
+import botConfig from "./../config/botConfig.json" with {type: "json"}
 import gTTS from 'gtts'
 import Component from './component.js';
 import ffmpeg from 'fluent-ffmpeg';
+ffmpeg.setFfmpegPath(botConfig.ffmpegPath);
+ffmpeg.setFfprobePath(botConfig.ffprobePath);
+
 import parseCommand from "../util/parseCommand.js"
 import { mkdirSync, rmSync } from 'fs';
 
