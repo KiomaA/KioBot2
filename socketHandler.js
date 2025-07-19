@@ -12,7 +12,8 @@ export default class SocketHandler{
         const server = http.createServer(app);
         this.io = new Server(server);
 
-        app.use('/overlays',express.static('./overlays'));
+        app.use('/',express.static('./html'))
+        app.use('/overlays',express.static('./html/overlays'));
         app.use('/temp',express.static('./temp'));
         app.use('/audio',express.static('./audio'));
 
