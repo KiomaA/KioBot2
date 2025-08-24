@@ -5,6 +5,7 @@ import parseCommand from "../util/parseCommand.js"
 export default class QueueMahjong extends Component{
     enabled = false;
     queue = [];
+    statusMessage = "Mahjong Queue Ready";
     constructor(){
         super();
     }
@@ -23,12 +24,16 @@ export default class QueueMahjong extends Component{
 
     enable(client, messageHandler){
         this.enabled = true;
-        client.say(messageHandler.defaultChannel,`已啟動排隊，請留言「+1」進入友人場！ Queue enabled. Please type "+1" at chat to queue!`);
+        this.statusMessage = `已啟動排隊，請留言「+1」進入友人場！ Queue enabled. Please type "+1" at chat to queue!`;
+        client.say(messageHandler.defaultChannel, `已啟動排隊，請留言「+1」進入友人場！ Queue enabled. Please type "+1" at chat to queue!`);
+        this.io.emit('mah',{message:`已啟動排隊，請留言「+1」進入友人場！ Queue enabled. Please type "+1" at chat to queue!`})
     }
 
     disable(client, messageHandler){
         this.enabled = false;
+        this.statusMessage = `已關閉排隊 Queue disabled`;
         client.say(messageHandler.defaultChannel,`已關閉排隊 Queue disabled`);
+        this.io.emit('mah',{message:`已關閉排隊 Queue disabled`})
     }
 
     add(params,front,client, messageHandler){
@@ -110,6 +115,13 @@ export default class QueueMahjong extends Component{
     }
 
 
+    handleSocket(socket,io,messageHandler){
+        socket.on('mah',(message)=>{
+            if (message.update){
+                io.emit('mah',{message:this.statusMessage, queue:this.queue})
+            }
+        })
+    }
 
 
     handleMessage(client,message,messageHandler){

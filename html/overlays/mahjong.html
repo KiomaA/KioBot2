@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahjong Queue</title>
+</head>
+<style>
+    body{
+        font-family: '宇文天穹';
+        text-shadow:
+            3px 3px 0 #000,
+            -3px 3px 0 #000,
+            -3px -3px 0 #000,
+            3px -3px 0 #000;
+    }
+
+    .marquee-container {
+      width: 100%;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .marquee-content {
+      display: inline-block;
+      white-space: nowrap;
+      font-size: 72px;
+      animation: marquee 5s linear infinite;
+    }
+
+    #inqueue, #queue{
+        font-size: 64px;
+    }
+
+    @keyframes marquee {
+      0% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      } 
+    }
+</style>
+<body>
+    <div class="marquee-container">
+      <div class="marquee-content" id="message">
+      </div>
+    </div>
+    <span id="inqueue">目前在排 In Queue:</span>
+    <ui id="queue"></ui>
+</body>
+<script src="/overlays/js/socket.io.min.js"></script>
+<script>
+    const socket = io("localhost:3000");
+
+    socket.on('connect',()=>{
+        socket.emit('mah',{update:true});
+    })
+
+    socket.on('mah',(message)=>{
+
+        if (message.message){
+            document.querySelector("#message").innerHTML = message.message;
+            document.querySelector(".marquee-content").style.animation=`marquee ${message.message.length * 0.2}s linear infinite`
+        }
+
+        if (message.queue){
+            let queueListHTML = "";
+            message.queue.forEach(person => {
+                queueListHTML += "<li>"+person+"</li>"
+            });
+            document.querySelector("#queue").innerHTML = queueListHTML;
+        }
+    })
+</script>
+</html>
