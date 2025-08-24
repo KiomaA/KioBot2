@@ -76,7 +76,7 @@ export default class QueueMahjong extends Component{
         else{
             players = Number.parseInt(params[0])
             if (Number.isNaN(players)) {
-                client.say(messageHandler.defaultChannel,`Start game: invalid parameters`);
+                client.say(messageHandler.defaultChannel,`Start game: Invalid parameters / Usage: !mah game [no. of players including streamer] / !mah gameNs [no. of players excluding streamer]`);
             }
         }
 

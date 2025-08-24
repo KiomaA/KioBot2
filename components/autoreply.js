@@ -1,5 +1,6 @@
 import parseCommand from "../util/parseCommand.js"
 import Component from "./component.js"
+import fs from 'fs'
 // import {playAudioFile} from 'audic'
 
 
@@ -41,10 +42,10 @@ export default class AutoReply extends Component{
             return {message: rawData[0], type: rawData[1], reply: rawData[2], ignoreAdmin:!!rawData[3], once:!!rawData[4], exceptions:exceptions, sound:rawData[6], soundCooldown:cooldown, replyLanguages:replyLanguages,skipLanguages:skipLanguages, disabled:!!rawData[10], subscriberReply:rawData[11], subscriberUniqueSound:!!rawData[12],} 
         })
         this.replies = replies
-        //console.log(this.replies);
+        // console.log(this.replies[0]);
     }
 
-    replyMessage(client,channel,message,language,name,user,isAdmin){
+    replyMessage(client,channel,message,language,name,user,platform,isAdmin,remark){
         for (const reply of this.replies) {
             // look for keyword
             if (message.toLowerCase().includes(reply.message)){
@@ -113,7 +114,23 @@ export default class AutoReply extends Component{
                       }
                     }     
                     if (playsound){
-                      this.io.emit('autoreply',{file:'/audio/'+sound})
+                        let soundPath = '/audio/'+sound
+
+                        // check if subscriber voice exists
+                        if (platform == "twitch"){
+                            if (reply.subscriberUniqueSound){
+                                if (remark.chatMessage.userInfo.isSubscriber){
+                                    let subSoundPath = `/audio/sub/${reply.type}/twitch_${user}.mp3`
+                                    console.log(subSoundPath)
+                                    if (fs.existsSync("./"+subSoundPath)) soundPath = subSoundPath;
+                                }
+                            }
+                        }
+                        // else if (platform == "youtube"){
+                        //     // reserved for youtube members
+                        // }
+                        
+                      this.io.emit('autoreply',{file:soundPath})
                     //   playAudioFile('./audio/'+reply.sound);
                     }
 

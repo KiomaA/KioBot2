@@ -75,7 +75,7 @@ export default class MessageHandler{
      
 
         // auto reply
-        this.autoreply.replyMessage(this.chatClient,channel,msg,language,nickname,user,isAdmin);
+        this.autoreply.replyMessage(this.chatClient,channel,msg,language,nickname,user,platform,isAdmin,remark);
 
 
         // other components
