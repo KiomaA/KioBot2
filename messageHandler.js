@@ -14,6 +14,7 @@ import QueueMahjong from './components/queueMahjong.js';
 import ChangeNickname from './components/changeNickname.js';
 import TwitchRedemption from './components/twitchRedemtion.js';
 import RestreamBotChat from './components/restreamBotChat.js';
+import YoutubeiLiveChat from './components/youtubeiLivechat.js';
 
 
 export default class MessageHandler{
@@ -30,13 +31,16 @@ export default class MessageHandler{
     
     
     
+    
+    
     socketHandler = new SocketHandler(this);
 
     constructor(chatClient, defaultChannel){
         this.chatClient = chatClient 
         this.defaultChannel = defaultChannel       
         this.youtubeLiveChat = new YoutubeLiveChat(this);
-        this.restreamBotChat = new RestreamBotChat(this)
+        this.restreamBotChat = new RestreamBotChat(this);
+        this.youtubeiLiveChat = new YoutubeiLiveChat(this);
     }
 
     handleTwitchMessage(channel, user, text, msg){

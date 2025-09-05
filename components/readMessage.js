@@ -36,27 +36,34 @@ export default class ReadMessage extends Component{
 
         let mes = message;
         if (!languageConfig.readUrl) mes = mes.replace(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm, "URL")
+        
 
-        const gtts = new gTTS(name+": "+mes, language);
-        const fileName = `/temp/${count}.mp3`;
-        const volume = this.volume;
-        const io  = this.io;
-        const tempo = languageConfig.readMessageSpeed[language]? languageConfig.readMessageSpeed[language]:1.5
+        try{
+            const gtts = new gTTS(name+": "+mes, language);
+            const fileName = `/temp/${count}.mp3`;
+            const volume = this.volume;
+            const io  = this.io;
+            const tempo = languageConfig.readMessageSpeed[language]? languageConfig.readMessageSpeed[language]:1.5
 
-        gtts.save('.'+fileName, function (err, result) {
-            if (err) console.log(err)
-            let duration = 10;
-            
-            ffmpeg.ffprobe('.'+fileName, function(err, metadata) {
-                //console.dir(metadata); // all metadata
-                duration = metadata.format.duration / tempo;
-            });           
-            
-            ffmpeg().addInput('.'+fileName).audioFilters([`volume=volume=${volume}`,`atempo=${tempo}`]).output('.'+fileName+"_p.mp3").on('end', function() {
-                //unlink(fileName);
-                io.emit('read',{file:fileName+"_p.mp3", duration:duration});
-              }).run();
-        });
+            gtts.save('.'+fileName, function (err, result) {
+                if (err) console.log(err)
+                let duration = 10;
+
+                ffmpeg.ffprobe('.'+fileName, function(err, metadata) {
+                    //console.dir(metadata); // all metadata
+                    duration = metadata.format.duration / tempo;
+                });           
+
+                ffmpeg().addInput('.'+fileName).audioFilters([`volume=volume=${volume}`,`atempo=${tempo}`]).output('.'+fileName+"_p.mp3").on('end', function() {
+                    //unlink(fileName);
+                    io.emit('read',{file:fileName+"_p.mp3", duration:duration});
+                  }).run();
+            });
+        } catch (error) {
+            console.log(error);
+            return;
+        }
+        
     }
 
     setVolume(params){

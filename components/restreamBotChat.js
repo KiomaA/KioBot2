@@ -1,6 +1,7 @@
 // [YouTube: Kioma Ch. 祈奧馬・阿凡隆【HKVTuber】] :face-blue-smiling::face-blue-smiling::face-blue-smiling:
 import Component from "./component.js";
 import twitchConfig from './../config/twitchConfig.json' with {type:'json'}
+import parseCommand from "../util/parseCommand.js";
 
 export default class RestreamBotChat extends Component {
     constructor(messageHandler){
@@ -19,10 +20,13 @@ export default class RestreamBotChat extends Component {
 
     async connect(){
         this.enabled = true;
+        this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Restream connect");
     }
       
       async disconnect(){
         this.enabled = false;
+        this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Restream disconnect");
+        
       }
 
       handleAdminMessage(client,message,messageHandler){

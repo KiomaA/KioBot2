@@ -114,6 +114,8 @@ export default class TwitchRedemption extends Component{
 
                 },duration*60*1000)
             }
+        }else if (item.endSound){
+            this.io.emit('autoreply',{file:'/audio/'+item.endSound})
         }
 
         return message;

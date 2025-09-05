@@ -121,7 +121,7 @@ export default class AutoReply extends Component{
                             if (reply.subscriberUniqueSound){
                                 if (remark.chatMessage.userInfo.isSubscriber){
                                     let subSoundPath = `/audio/sub/${reply.type}/twitch_${user}.mp3`
-                                    console.log(subSoundPath)
+                                    // console.log(subSoundPath)
                                     if (fs.existsSync("./"+subSoundPath)) soundPath = subSoundPath;
                                 }
                             }
