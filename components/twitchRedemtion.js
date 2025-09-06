@@ -4,6 +4,7 @@ import Component from "./component.js"
 
 export default class TwitchRedemption extends Component{
     rewards = {}
+    playSound = true;
 
     constructor(googleSheetHandler){
         super();
@@ -108,13 +109,13 @@ export default class TwitchRedemption extends Component{
                 setTimeout(()=>{
                     chatClient.say(channel,`兌換${rewardNameZh}時間已到！ Time's up for reward ${rewardNameEn}!`)
 
-                    if (item.endSound){
+                    if (item.endSound && this.playSound){
                         io.emit('autoreply',{file:'/audio/'+item.endSound})
                     }
 
                 },duration*60*1000)
             }
-        }else if (item.endSound){
+        }else if (item.endSound && this.playSound){
             this.io.emit('autoreply',{file:'/audio/'+item.endSound})
         }
 
@@ -128,6 +129,8 @@ export default class TwitchRedemption extends Component{
         let reply = false;
        switch (command){
             case "update": this.updateRewardList();  reply = "Reward list updated"; break;
+            case "mute": this.playSound = false; reply = "Reward sound muted"; break;
+            case "unmute": this.playSound = true; reply = "Reward sound enabled"; break;
             default: break;
        }
 
