@@ -1,10 +1,12 @@
-import languageConfig from './../config/languageConfig.json' with {type:'json'}
-import botConfig from "./../config/botConfig.json" with {type: "json"}
+import config from '../config.js';
 import gTTS from 'gtts'
 import Component from './component.js';
 import ffmpeg from 'fluent-ffmpeg';
-ffmpeg.setFfmpegPath(botConfig.ffmpegPath);
-ffmpeg.setFfprobePath(botConfig.ffprobePath);
+
+const {language: languageConfig, ffmpeg: ffmpegConfig, readMessage: readMessageConfig} = config
+
+ffmpeg.setFfmpegPath(ffmpegConfig.ffmpegPath);
+ffmpeg.setFfprobePath(ffmpegConfig.ffprobePath);
 
 import parseCommand from "../util/parseCommand.js"
 import { mkdirSync, rmSync } from 'fs';
@@ -35,7 +37,7 @@ export default class ReadMessage extends Component{
         //console.log(language)
 
         let mes = message;
-        if (!languageConfig.readUrl) mes = mes.replace(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm, "URL")
+        if (!readMessageConfig.readUrl) mes = mes.replace(/(?:(?:https?|ftp|file):\/\/|www\.|ftp\.)(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[-A-Z0-9+&@#\/%=~_|$?!:,.])*(?:\([-A-Z0-9+&@#\/%=~_|$?!:,.]*\)|[A-Z0-9+&@#\/%=~_|$])/igm, "URL")
         
 
         try{

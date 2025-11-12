@@ -1,7 +1,8 @@
 import Component from "./component.js";
-import youtubeConfig from "./../config/youtubeConfig.json" with {type: "json"}
-import {LiveChat} from 'youtube-chat'
+import config from "../config.js";
 import parseCommand from "../util/parseCommand.js"
+
+const {youtube: youtubeConfig} = config
 
 export default class YoutubeLiveChat extends Component {
     fetchTime = new Date();
@@ -10,7 +11,7 @@ export default class YoutubeLiveChat extends Component {
     constructor(messageHandler){
         super();
         this.messageHandler = messageHandler;
-        if (youtubeConfig.enableAtStart){
+        if (youtubeConfig.enabled){
           this.connect();
         }
         

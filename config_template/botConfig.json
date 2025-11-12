@@ -1,6 +1,0 @@
-{
-    "botName":"KioBot",
-    "socketPort":3000,
-    "ffmpegPath":"C:/ffmpeg/ffmpeg.exe",
-    "ffprobePath":"C:/ffmpeg/ffprobe.exe"
-}

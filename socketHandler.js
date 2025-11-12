@@ -1,8 +1,8 @@
 import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io'; 
+import config from './config.js';
 
-import botConfig from './config/botConfig.json' with {type:'json'}
 import Component from "./components/component.js";
 export default class SocketHandler{
     constructor(messageHandler){
@@ -18,7 +18,7 @@ export default class SocketHandler{
         app.use('/audio',express.static('./audio'));
 
 
-        server.listen(botConfig.socketPort,()=>{console.log(`created server on http://localhost:${botConfig.socketPort}`);})
+        server.listen(config.socketPort,()=>{console.log(`created server on http://localhost:${config.socketPort}`);})
         
         for (const key in this.messageHandler) {
             const comp = this.messageHandler[key]

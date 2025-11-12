@@ -1,7 +1,9 @@
-import googleSheetConfig from './config/googleSheetConfig.json' with {type: "json"}
+import config from './config.js';
 import googleCredentials from './credentials/googleCredentials.json' with {type: "json"}
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { JWT } from 'google-auth-library';
+
+const {googleSheet: googleSheetConfig} = config
 
 export default class GoogleSheetHandler{
     constructor(){

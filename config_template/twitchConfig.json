@@ -1,7 +1,0 @@
-{
-    "channels": ["kioma_avalon"],
-    "ignoreChannels":["restreambot"],
-    "restreamBotEnabled":true,
-    "restreamBot":["restreambot"],
-    "admins":["kioma_avalon","k10opalbot"]
-}

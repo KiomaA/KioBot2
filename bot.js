@@ -1,17 +1,17 @@
+import config from './config.js';
 import { RefreshingAuthProvider } from '@twurple/auth';
 import { ChatClient } from '@twurple/chat';
 import twitchCredentials from './credentials/twitchCredentials.json' with { type: 'json' }
-import twitchConfig from './config/twitchConfig.json' with { type: 'json' }
 import MessageHandler from './messageHandler.js';
 import { promises as fs } from 'fs';
 import { Bot } from '@twurple/easy-bot';
-// import { ApiClient } from '@twurple/api';
-// import { EventSubWsListener } from '@twurple/eventsub-ws';
+
+const {twitch: twitchConfig} = config
+
 
 const clientId = twitchCredentials.id;
 const clientSecret = twitchCredentials.secret;
 
-//const accessToken =  twitchCredentials.token;
 
 // twitch chat auth
 const tokenData = JSON.parse(await fs.readFile(`./tokens/tokens.${twitchCredentials.bot}.json`, 'utf-8'));

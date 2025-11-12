@@ -1,4 +1,4 @@
-import parseCommand from "../util/parseCommand";
+import parseCommand from "../util/parseCommand.js";
 import Component from "./component.js";
 
 export default class Timer extends Component{

@@ -1,8 +1,6 @@
 import parseCommand from "../util/parseCommand.js"
 import Component from "./component.js"
 import fs from 'fs'
-// import {playAudioFile} from 'audic'
-
 
 export default class AutoReply extends Component{
     replies = []

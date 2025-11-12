@@ -1,9 +1,9 @@
 import Component from "./component.js";
-import youtubeConfig from "./../config/youtubeConfig.json" with {type: "json"}
-// import {LiveChat} from 'youtube-chat'
+// import config from "../config.js";
 import parseCommand from "../util/parseCommand.js"
-
 import {Innertube, YTNodes} from 'youtubei.js'
+
+// const {youtube: youtubeConfig} = config;
 
 
 export default class YoutubeiLiveChat extends Component {
@@ -13,9 +13,9 @@ export default class YoutubeiLiveChat extends Component {
     constructor(messageHandler){
         super();
         this.messageHandler = messageHandler;
-        if (youtubeConfig.enableAtStart && youtubeConfig.videoId){
-          this.connect(youtubeConfig.videoId);
-        }
+        // if (youtubeConfig.enabled && youtubeConfig.videoId){
+        //   this.connect(youtubeConfig.videoId);
+        // }
         
     }
 
@@ -30,26 +30,17 @@ export default class YoutubeiLiveChat extends Component {
 
           const yt =  await Innertube.create({});
 
-          // const channel = await it.getChannel(youtubeConfig.channelId);
-
           const videoInfo = await yt.getInfo(params[0]);
 
           this.liveChat = await videoInfo.getLiveChat();
 
           this.liveChat.start();
 
-
-          // this.liveChat = new LiveChat({channelId: youtubeConfig.channelId});
           await this.enableOnChat(this.liveChat);
-          // const ok = await this.liveChat.start()
-          // this.connected = true;
-          // if (!this.initiated){
           this.messageHandler.chatClient.say(this.messageHandler.defaultChannel, "Youtube livechat connected");
           
-          //console.log("youtube connected")
           
         } catch (error) {
-          //console.log("fetch youtube error")
           console.log(error)
           this.connect = false;
           console.log("Unable to connect youtube livechat")
@@ -88,19 +79,10 @@ export default class YoutubeiLiveChat extends Component {
             
               switch (item.type) {
                 case 'LiveChatTextMessage':
-                  // console.log(
-                  //   `${item.as(YTNodes.LiveChatTextMessage).author?.is_moderator ? '[MOD]' : ''}`,
-                  //   `${hours} - ${item.as(YTNodes.LiveChatTextMessage).author?.name.toString()}:\n` +
-                  //   `${item.as(YTNodes.LiveChatTextMessage).message.toString()}\n`
-                  // );
-
-                  // console.log(item.as(YTNodes.LiveChatTextMessage));
-                  
                   const channelId = item.as(YTNodes.LiveChatTextMessage).author.id;
                   const username = item.as(YTNodes.LiveChatTextMessage).author.name;
                   let message = "";
                   const runs = item.as(YTNodes.LiveChatTextMessage).message.runs;
-
 
                   runs.forEach(run => {
                     console.log(run);
@@ -114,11 +96,8 @@ export default class YoutubeiLiveChat extends Component {
 
 
                   this.messageHandler.handleYoutubeMessage(channelId,username,message,{});
-
-                  // let channelId = item.as(YTNodes.LiveChatTextMessage).author.
-
-                  // this.messageHandler.handleYoutubeMessage(channelId,username,message,chatItem);
                   break;
+
                 case 'LiveChatPaidMessage':
                   console.log(
                     `${item.as(YTNodes.LiveChatPaidMessage).author?.is_moderator ? '[MOD]' : ''}`,
@@ -127,6 +106,7 @@ export default class YoutubeiLiveChat extends Component {
                     `${item.as(YTNodes.LiveChatPaidMessage).purchase_amount}\n`
                   );
                   break;
+
                 case 'LiveChatPaidSticker':
                   console.log(
                     `${item.as(YTNodes.LiveChatPaidSticker).author?.is_moderator ? '[MOD]' : ''}`,
@@ -134,6 +114,7 @@ export default class YoutubeiLiveChat extends Component {
                     `${item.as(YTNodes.LiveChatPaidSticker).purchase_amount}\n`
                   );
                   break;
+
                 default:
                   console.debug(action);
                   break;

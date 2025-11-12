@@ -1,13 +1,14 @@
-import languageConfig from './../config/languageConfig.json' with {type:'json'}
+import config from './../config.js'
 import { eld } from 'eld'
 import Component from './component.js';
+const { language: languageConfig } = config;
+
+
 export default class DetectLanguage extends Component{
     constructor(){ 
         super();
-        if (languageConfig.detectLanguages){
-            eld.dynamicLangSubset(languageConfig.detectLanguages);
-            eld.dynamicLangSubset(false)
-        }        
+        eld.dynamicLangSubset(languageConfig.detectLanguages);
+        eld.dynamicLangSubset(false)    
     }
 
     detect(message){

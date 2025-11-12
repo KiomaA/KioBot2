@@ -1,7 +1,8 @@
 import parseCommand from "../util/parseCommand.js"
 import Component from "./component.js"
-import languageConfig from './../config/languageConfig.json' with {type:'json'}
+import config from "../config.js"
 
+const {language: languageConfig} = config;
 
 export default class ChangeNickname extends Component{
     twitchNames = {}
@@ -36,28 +37,6 @@ export default class ChangeNickname extends Component{
         this.youtubeNames = ytList;  
         this.restreamNames = rsList;
     }
-
-    // async updateTwitchNameList(){
-    //     const sheet = await this.googleSheetHandler.getSheet("twitch_names");
-    //     const rows = await sheet.getRows();
-    //     let list = {};
-    //     rows.forEach((row)=>{
-    //         const rawData = row._rawData
-    //         list[rawData[0]] = {chinese_pronounce:rawData[1], zh:rawData[2], en:rawData[3], ja:rawData[4], ko:rawData[5]} 
-    //     })
-    //     this.twitchNames = list
-    // }
-
-    // async updateYoutubehNameList(){
-    //     const sheet = await this.googleSheetHandler.getSheet("yt_names");
-    //     const rows = await sheet.getRows();
-    //     let list = {};
-    //     rows.forEach((row)=>{
-    //         const rawData = row._rawData
-    //         list[rawData[0]] = {chinese_pronounce:rawData[1], zh:rawData[2], en:rawData[3], ja:rawData[4], ko:rawData[5]} 
-    //     })
-    //     this.youtubeNames = list
-    // }
 
     change(platform,user,name,lang){
         let item = {}

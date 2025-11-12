@@ -3,10 +3,7 @@ import Component from './components/component.js';
 import DetectLanguage from './components/detectLanguage.js';
 import MessageFilter from './components/messageFilter.js';
 import ReadMessage from './components/readMessage.js';
-import twitchConfig from './config/twitchConfig.json' with {type:'json'}
-import youtubeConfig from './config/youtubeConfig.json' with {type:'json'}
-//import botConfig from './config/botConfig.json' with { type: 'json' }
-import languageConfig from './config/languageConfig.json' with {type:'json'}
+import config from './config.js';
 import GoogleSheetHandler from './googleSheetHandler.js';
 import SocketHandler from './socketHandler.js';
 import YoutubeLiveChat from './components/youtubeLivechat.js';
@@ -15,6 +12,9 @@ import ChangeNickname from './components/changeNickname.js';
 import TwitchRedemption from './components/twitchRedemtion.js';
 import RestreamBotChat from './components/restreamBotChat.js';
 import YoutubeiLiveChat from './components/youtubeiLivechat.js';
+import Timer from './components/timer.js';
+
+const {twitch: twitchConfig, youtube: youtubeConfig, readMessage:readMessageConfig} = config
 
 
 export default class MessageHandler{
@@ -24,15 +24,12 @@ export default class MessageHandler{
     autoreply = new AutoReply(this.googleSheetHandler);
     messageFilter = new MessageFilter(this.googleSheetHandler);
     detectLanguage = new DetectLanguage();
-    readMessage = new ReadMessage(languageConfig.enabledReadMessage);
+    readMessage = new ReadMessage(readMessageConfig.enabled);
     changeNickname = new ChangeNickname(this.googleSheetHandler);
     twitchRedemption = new TwitchRedemption(this.googleSheetHandler);
     queueMahjong = new QueueMahjong();
-    
-    
-    
-    
-    
+    timer = new Timer();
+        
     socketHandler = new SocketHandler(this);
 
     constructor(chatClient, defaultChannel){
@@ -45,7 +42,7 @@ export default class MessageHandler{
 
     handleTwitchMessage(channel, user, text, msg){
         const isAdmin = twitchConfig.admins.includes(user)
-        if (twitchConfig.restreamBot.includes(user)){
+        if (twitchConfig.restreamBotChannel.includes(user)){
             this.restreamBotChat.handleRestreamMessage(text,msg);
             return;
         }else 

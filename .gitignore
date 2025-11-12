@@ -1,3 +1,4 @@
+.env
 node_modules
 /credentials
 /test
@@ -5,4 +6,3 @@ node_modules
 /tokens/*.json
 /twitch-cli
 /temp
-/config
