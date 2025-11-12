@@ -10,7 +10,7 @@
 ## Install 
 1. Install Node.js (https://nodejs.org/) if you have not installed
 2. Double click install.bat to install dependencies
-3. Rename config_template folder to config and edit config
+3. Copy .env.example and rename to .env, put your own config
 
 ## Run
 - Double click run.bat
