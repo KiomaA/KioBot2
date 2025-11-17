@@ -17,7 +17,7 @@ const config = {
         detectLanguages: process.env.LANGUAGE_DETECTED ? process.env.LANGUAGE_DETECTED.split(',') : [],
         addChineseWeight: process.env.LANGUAGE_ADD_CHINESE_WEIGHT === 'true' || false,
         readMessageSpeed: process.env.LANGUAGE_READ_SPEED ? JSON.parse(process.env.LANGUAGE_READ_SPEED):{},
-        defaultChinese: process.env.DEFAULT_CHINESE || "zh-tw",
+        defaultChinese: process.env.LANGUAGE_DEFAULT_CHINESE || "zh-yue",
     },
 
     readMessage: {
