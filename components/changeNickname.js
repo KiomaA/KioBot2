@@ -101,7 +101,7 @@ export default class ChangeNickname extends Component{
        switch (command){
             //case "add": reply = this.addReply(params)
             case "update": this.updateNameList(); reply = "Nickname list updated"; break;
-            default: break;
+            default: reply="Usage: update"; break;
        }
 
        if (reply){

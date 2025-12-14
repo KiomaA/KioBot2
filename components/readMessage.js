@@ -85,7 +85,7 @@ export default class ReadMessage extends Component{
             case "enable": this.enabled = true; reply = "Read message enabled"; break;
             case "disable": this.enabled = false; reply = "Read message disabled"; break;
             case "volume": reply = this.setVolume(params); break;
-            default: break;
+            default: reply = "Usage: enable disable volume"; break;
        }
 
        if (reply){

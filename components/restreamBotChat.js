@@ -34,11 +34,16 @@ export default class RestreamBotChat extends Component {
         if (!message.message.match(/^!rb/)) return;
         const {command, params} = parseCommand(message.message, true);
        
-        //let reply = false;
+        let reply = false;
        switch (command){
             case "connect": this.connect(); break;
             case "disconnect": this.disconnect(); break;
             default: break;
        }
+       if (reply){
+        console.log(reply)
+        client.say(message.channel, reply)
+       }
+       
     }
 }

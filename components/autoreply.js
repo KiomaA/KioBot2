@@ -138,6 +138,23 @@ export default class AutoReply extends Component{
         }
     }
 
+    reset(resetMessageUsers, resetMessageCount, resetSoundTime) {
+        let reset = [];
+        if (resetMessageUsers) {
+            this.messageUsers = {};
+            reset.push("user list")
+        }
+        if (resetMessageCount) {
+            this.messageCount = {}
+            reset.push("message count")
+        }
+        if (resetSoundTime) {
+            this.soundTime = {}
+            reset.push("cooldown time")
+        }
+        return `Autoreply ${reset.join(", ")} reset`
+    }
+
     handleAdminMessage(client,message,messageHandler){
         if (!message.message.match(/^!autoreply/)) return;
         const {command, params} = parseCommand(message.message, true);
@@ -148,7 +165,11 @@ export default class AutoReply extends Component{
             case "update": this.updateReplyList(); reply = "Auto-reply updated"; break;
             case "mute": this.mute = true; reply = "Auto-reply muted"; break;
             case "unmute": this.mute = false; reply = "Auto-reply unmuted"; break;
-            default: break;
+            case "resetUsers": reply = this.reset(true,false,false); break;
+            case "resetCount":  reply = this.reset(false,true,false); break;
+            case "resetTime":  reply = this.reset(false,false,true); break;
+            case "reset": reply = this.reset(true,true,true); break;
+            default: reply="Usage: update mute unmute resetUsers resetTime reset"; break;
        }
 
        if (reply){

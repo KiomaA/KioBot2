@@ -136,7 +136,7 @@ export default class QueueMahjong extends Component{
         if (!message.message.match(/^!mah/)) return;
         const {command, params} = parseCommand(message.message, true);
        
-        //let reply = false;
+        let reply = false;
        switch (command){
             case "start": this.enable(client, messageHandler);break;
             case "end": this.disable(client, messageHandler); break;
@@ -151,7 +151,12 @@ export default class QueueMahjong extends Component{
             case "game": this.startGame(params[0], true, client, messageHandler); break;
             case "gameNs": this.startGame(params[0], false, client, messageHandler); break;
             case "check": this.check(client, messageHandler); break;
-            default: break;
+            default: reply = "Usage: start end add addFront remove removeIdx clear 3ma 4ma 5ma game gameNs check"; break;
+       }
+
+       if (reply){
+        console.log(reply)
+        client.say(message.channel, reply)
        }
 
     }

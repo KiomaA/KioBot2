@@ -39,7 +39,7 @@ export default class MessageFilter extends Component{
            switch (command){
                 //case "add": reply = this.addReply(params)
                 case "update": this.updateFilter(); reply = "Filter updated"; break;
-                default: break;
+                default: reply="Usage: update"; break;
            }
     
            if (reply){

@@ -26,7 +26,7 @@ export default class Timer extends Component{
         switch (command){
              case "m": reply = this.setTimer(params,true, client, message.channel);  break;
              case "s": reply = this.setTimer(params,false, client, message.channel); break;
-             default: break;
+             default: "Usage: m s"; break;
         }
 
         if (reply){

@@ -127,11 +127,15 @@ export default class YoutubeiLiveChat extends Component {
         if (!message.message.match(/^!yi/)) return;
         const {command, params} = parseCommand(message.message, true);
        
-        //let reply = false;
+        let reply = false;
        switch (command){
             case "connect": this.connect(params); break;
             case "disconnect": this.disconnect(); break;
             default: break;
+       }
+       if (reply){
+        console.log(reply)
+        client.say(message.channel, reply)
        }
     }
 }

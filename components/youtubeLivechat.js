@@ -91,11 +91,15 @@ export default class YoutubeLiveChat extends Component {
         if (!message.message.match(/^!yt/)) return;
         const {command, params} = parseCommand(message.message, true);
        
-        //let reply = false;
+       let reply = false;
        switch (command){
             case "connect": this.connect(); break;
             case "disconnect": this.disconnect(); break;
-            default: break;
+            default: reply = "Usage: connect disconnect"; break;
+       }
+       if (reply){
+        console.log(reply)
+        client.say(message.channel, reply)
        }
     }
 }

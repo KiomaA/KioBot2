@@ -131,7 +131,7 @@ export default class TwitchRedemption extends Component{
             case "update": this.updateRewardList();  reply = "Reward list updated"; break;
             case "mute": this.playSound = false; reply = "Reward sound muted"; break;
             case "unmute": this.playSound = true; reply = "Reward sound enabled"; break;
-            default: break;
+            default: reply = "Usage: update mute unmute"; break;
        }
 
        if (reply){
