@@ -25,7 +25,7 @@ export default class Timer extends Component {
       if (this.timerSoundFile) {
          this.io.emit("autoreply", { file: this.timerSoundFile });
       }
-      return `Timer set for ${seconds} ${inMinutes ? "minutes" : "seconds"}`;
+      return `Timer set for ${params[0]} ${inMinutes ? "minutes" : "seconds"}`;
    }
 
    handleAdminMessage(client, message, messageHandler) {
