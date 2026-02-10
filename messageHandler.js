@@ -1,96 +1,121 @@
-import AutoReply from './components/autoreply.js';
-import Component from './components/component.js';
-import DetectLanguage from './components/detectLanguage.js';
-import MessageFilter from './components/messageFilter.js';
-import ReadMessage from './components/readMessage.js';
-import config from './config.js';
-import GoogleSheetHandler from './googleSheetHandler.js';
-import SocketHandler from './socketHandler.js';
-import YoutubeLiveChat from './components/youtubeLivechat.js';
-import QueueMahjong from './components/queueMahjong.js';
-import ChangeNickname from './components/changeNickname.js';
-import TwitchRedemption from './components/twitchRedemtion.js';
-import RestreamBotChat from './components/restreamBotChat.js';
-import YoutubeiLiveChat from './components/youtubeiLivechat.js';
-import Timer from './components/timer.js';
+import AutoReply from "./components/autoreply.js";
+import Component from "./components/component.js";
+import DetectLanguage from "./components/detectLanguage.js";
+import MessageFilter from "./components/messageFilter.js";
+import ReadMessage from "./components/readMessage.js";
+import config from "./config.js";
+import GoogleSheetHandler from "./googleSheetHandler.js";
+import SocketHandler from "./socketHandler.js";
+import YoutubeLiveChat from "./components/youtubeLivechat.js";
+import QueueMahjong from "./components/queueMahjong.js";
+import ChangeNickname from "./components/changeNickname.js";
+import TwitchRedemption from "./components/twitchRedemtion.js";
+import RestreamBotChat from "./components/restreamBotChat.js";
+import YoutubeiLiveChat from "./components/youtubeiLivechat.js";
+import Timer from "./components/timer.js";
 
-const {twitch: twitchConfig, youtube: youtubeConfig, readMessage:readMessageConfig} = config
+const { twitch: twitchConfig, youtube: youtubeConfig, readMessage: readMessageConfig } = config;
 
+export default class MessageHandler {
+   googleSheetHandler = new GoogleSheetHandler();
 
-export default class MessageHandler{
-    googleSheetHandler = new GoogleSheetHandler();
-    
-    // components
-    autoreply = new AutoReply(this.googleSheetHandler);
-    messageFilter = new MessageFilter(this.googleSheetHandler);
-    detectLanguage = new DetectLanguage();
-    readMessage = new ReadMessage(readMessageConfig.enabled);
-    changeNickname = new ChangeNickname(this.googleSheetHandler);
-    twitchRedemption = new TwitchRedemption(this.googleSheetHandler);
-    queueMahjong = new QueueMahjong();
-    timer = new Timer();
-        
-    socketHandler = new SocketHandler(this);
+   // components
+   autoreply = new AutoReply(this.googleSheetHandler);
+   messageFilter = new MessageFilter(this.googleSheetHandler);
+   detectLanguage = new DetectLanguage();
+   readMessage = new ReadMessage(readMessageConfig.enabled);
+   changeNickname = new ChangeNickname(this.googleSheetHandler);
+   twitchRedemption = new TwitchRedemption(this.googleSheetHandler);
+   queueMahjong = new QueueMahjong();
+   timer = new Timer();
 
-    constructor(chatClient, defaultChannel){
-        this.chatClient = chatClient 
-        this.defaultChannel = defaultChannel       
-        this.youtubeLiveChat = new YoutubeLiveChat(this);
-        this.restreamBotChat = new RestreamBotChat(this);
-        this.youtubeiLiveChat = new YoutubeiLiveChat(this);
-    }
+   socketHandler = new SocketHandler(this);
 
-    handleTwitchMessage(channel, user, text, msg){
-        const isAdmin = twitchConfig.admins.includes(user)
-        if (twitchConfig.restreamBotChannel.includes(user)){
-            this.restreamBotChat.handleRestreamMessage(text,msg);
-            return;
-        }else 
-        if (twitchConfig.ignoreChannels.includes(user)) return;
-        this.handleMessage(channel,'twitch',user,msg.userInfo.displayName, text, isAdmin, {chatMessage:msg});
-    }
+   constructor(chatClient, defaultChannel) {
+      this.chatClient = chatClient;
+      this.defaultChannel = defaultChannel;
+      this.youtubeLiveChat = new YoutubeLiveChat(this); //deprecated, use youtubeiLiveChat instead
+      this.restreamBotChat = new RestreamBotChat(this);
+      this.youtubeiLiveChat = new YoutubeiLiveChat(this);
+   }
 
-    handleYoutubeMessage(channelId, username, message,channelItem){
-        if (youtubeConfig.ignoreChannels.includes(channelId)) return;
-        const isAdmin = youtubeConfig.admins.includes(channelId);
-        this.handleMessage(this.defaultChannel,'youtube',channelId,username,message,isAdmin,{channelItem:channelItem});
-    }
+   handleTwitchMessage(channel, user, text, msg) {
+      const isAdmin = twitchConfig.admins.includes(user);
+      if (twitchConfig.restreamBotChannel.includes(user)) {
+         this.restreamBotChat.handleRestreamMessage(text, msg);
+         return;
+      } else if (twitchConfig.ignoreChannels.includes(user)) return;
+      this.handleMessage(channel, "twitch", user, msg.userInfo.displayName, text, isAdmin, {
+         chatMessage: msg,
+      });
+   }
 
-    async handleMessage(channel,platform,user,name,message,isAdmin,remark){
-        // filter message
-        message = this.messageFilter.filterMessage(message);
+   handleYoutubeMessage(channelId, username, message, channelItem) {
+      if (youtubeConfig.ignoreChannels.includes(channelId)) return;
+      const isAdmin = youtubeConfig.admins.includes(channelId);
+      this.handleMessage(this.defaultChannel, "youtube", channelId, username, message, isAdmin, {
+         channelItem: channelItem,
+      });
+   }
 
-        // detect language
-        let lang = this.detectLanguage.detect(message);
-        //console.log(language);
-        
-        // change nickname
-        let {nickname, language} = this.changeNickname.change(platform,user,name,lang);
-        //let language = lang;
+   async handleMessage(channel, platform, user, name, message, isAdmin, remark) {
+      // filter message
+      message = this.messageFilter.filterMessage(message);
 
-         // handle twitch redemption
-        let msg = this.twitchRedemption.redeem(this.chatClient,channel,platform,nickname,lang,message,remark);
-        
-        // read message
-        await this.readMessage.read(nickname,msg,language)
-     
+      // detect language
+      let lang = this.detectLanguage.detect(message);
+      //console.log(language);
 
-        // auto reply
-        this.autoreply.replyMessage(this.chatClient,channel,msg,language,nickname,user,platform,isAdmin,remark);
+      // change nickname
+      let { nickname, language } = this.changeNickname.change(platform, user, name, lang);
+      //let language = lang;
 
+      // handle twitch redemption
+      let msg = this.twitchRedemption.redeem(
+         this.chatClient,
+         channel,
+         platform,
+         nickname,
+         lang,
+         message,
+         remark,
+      );
 
-        // other components
-        for (const key in this) {
-            if (Object.prototype.hasOwnProperty.call(this, key)) {
-                const comp = this[key];
-                if (comp instanceof Component){
-                    comp.handleMessage(this.chatClient,{channel,platform,user,nickname,message,isAdmin,remark},this)
-                    if (isAdmin){
-                        comp.handleAdminMessage(this.chatClient,{channel,platform,user,nickname,message,isAdmin,remark},this)
-                    }
-                }
+      // read message
+      await this.readMessage.read(nickname, msg, language);
+
+      // auto reply
+      this.autoreply.replyMessage(
+         this.chatClient,
+         channel,
+         msg,
+         language,
+         nickname,
+         user,
+         platform,
+         isAdmin,
+         remark,
+      );
+
+      // other components
+      for (const key in this) {
+         if (Object.prototype.hasOwnProperty.call(this, key)) {
+            const comp = this[key];
+            if (comp instanceof Component) {
+               comp.handleMessage(
+                  this.chatClient,
+                  { channel, platform, user, nickname, message, isAdmin, remark },
+                  this,
+               );
+               if (isAdmin) {
+                  comp.handleAdminMessage(
+                     this.chatClient,
+                     { channel, platform, user, nickname, message, isAdmin, remark },
+                     this,
+                  );
+               }
             }
-        }
-    }
-
+         }
+      }
+   }
 }

@@ -40,7 +40,7 @@ export default class Timer extends Component {
             reply = this.setTimer(params, false, client, message.channel);
             break;
          default:
-            "Usage: m s";
+            reply = "Usage: m s";
             break;
       }
 

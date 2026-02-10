@@ -166,9 +166,11 @@ export default class QueueMahjong extends Component {
       let reply = false;
       switch (command) {
          case "start":
+         case "on":
             this.enable(client, messageHandler);
             break;
          case "end":
+         case "off":
             this.disable(client, messageHandler);
             break;
          case "add":
@@ -206,7 +208,7 @@ export default class QueueMahjong extends Component {
             break;
          default:
             reply =
-               "Usage: start end add addFront remove removeIdx clear 3ma 4ma 5ma game gameNs check";
+               "Usage: start/on end/off add addFront remove removeIdx clear 3ma 4ma 5ma game gameNs check";
             break;
       }
 
