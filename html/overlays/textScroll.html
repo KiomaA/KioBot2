@@ -71,7 +71,8 @@
 
         if (message.message && enabled){
             document.querySelector("#message").innerHTML = message.message;
-            document.querySelector(".marquee-content").style.animation=`marquee ${message.message.length > 30 ? message.message.length * 0.2 : 5}s linear infinite`
+            document.querySelector(".marquee-content").style.animation = "none";
+            document.querySelector(".marquee-content").style.animation = `marquee ${message.message.length > 30 ? message.message.length * 0.2 : 5}s linear infinite`;
         }
     })
 </script>
