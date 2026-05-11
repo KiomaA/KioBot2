@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mahjong Queue</title>
+    <title>Text Scroll</title>
 </head>
 <style>
     body{
@@ -24,7 +24,7 @@
     .marquee-content {
       display: inline-block;
       white-space: nowrap;
-      font-size: 72px;
+      font-size: 48px;
       animation: marquee 5s linear infinite;
     }
 
@@ -44,32 +44,34 @@
 <body>
     <div class="marquee-container">
       <div class="marquee-content" id="message">
+        Hello World!
       </div>
     </div>
-    <span id="inqueue">目前在排 In Queue:</span>
-    <ui id="queue"></ui>
 </body>
 <script src="/overlays/js/socket.io.min.js"></script>
 <script>
     const socket = io("localhost:3000");
+    let enabled = true;
 
     socket.on('connect',()=>{
-        socket.emit('mah',{update:true});
+        socket.emit('textScroll',{update:true});
     })
 
-    socket.on('mah',(message)=>{
-
-        if (message.message){
-            document.querySelector("#message").innerHTML = message.message;
-            document.querySelector(".marquee-content").style.animation=`marquee ${message.message.length > 30 ? message.message.length * 0.2 : 5}s linear infinite`
+    socket.on('textScroll',(message)=>{
+        if (message.disable){
+            document.querySelector(".marquee-content").style.animation = "none";
+            document.querySelector("#message").innerHTML = "";
+            enabled = false;
+            return;
         }
 
-        if (message.queue){
-            let queueListHTML = "";
-            message.queue.forEach(person => {
-                queueListHTML += "<li>"+person+"</li>"
-            });
-            document.querySelector("#queue").innerHTML = queueListHTML;
+        if (message.enable){
+            enabled = true;
+        }
+
+        if (message.message && enabled){
+            document.querySelector("#message").innerHTML = message.message;
+            document.querySelector(".marquee-content").style.animation=`marquee ${message.message.length > 30 ? message.message.length * 0.2 : 5}s linear infinite`
         }
     })
 </script>

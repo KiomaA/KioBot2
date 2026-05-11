@@ -13,6 +13,7 @@ import TwitchRedemption from "./components/twitchRedemtion.js";
 import RestreamBotChat from "./components/restreamBotChat.js";
 import YoutubeiLiveChat from "./components/youtubeiLivechat.js";
 import Timer from "./components/timer.js";
+import TextScroll from "./components/textScroll.js";
 
 const { twitch: twitchConfig, youtube: youtubeConfig, readMessage: readMessageConfig } = config;
 
@@ -28,6 +29,7 @@ export default class MessageHandler {
    twitchRedemption = new TwitchRedemption(this.googleSheetHandler);
    queueMahjong = new QueueMahjong();
    timer = new Timer();
+   textScroll = new TextScroll(this, this.googleSheetHandler);
 
    socketHandler = new SocketHandler(this);
 

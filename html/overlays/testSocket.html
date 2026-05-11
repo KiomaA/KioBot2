@@ -6,13 +6,20 @@
     <title>Document</title>
 </head>
 <body>
-    <p id="message"></p>
+    <h2>Socket messages</h2>
+    <div id="message"></div>
+    <p><a href="javascript:void(0)" onclick="clearMessages()">Clear messages</a></p>
+    <p><a href="./../">Back to index</a></p>  
 </body>
 <script src="/overlays/js/socket.io.min.js"></script>
 <script>
+    const clearMessages = () => {
+        document.querySelector("#message").innerHTML = "";
+    }
+
     const socket = io("localhost:3000");
     socket.onAny((event, ...args) => {
-        document.querySelector("#message").innerHTML = `${event} ${JSON.stringify(args)}`;
+        document.querySelector("#message").innerHTML += `<div>[${new Date().toISOString()}] - ${event} - ${JSON.stringify(args)}</div>`;
     });
 
 </script>
