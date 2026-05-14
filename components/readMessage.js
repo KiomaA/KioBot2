@@ -13,7 +13,7 @@ import { mkdirSync, rmSync } from "fs";
 
 export default class ReadMessage extends Component {
    fileCount = 0;
-   volume = 0.7;
+   volume = readMessageConfig.defaultVolume;
    queue = [];
    constructor(enabled) {
       super();
@@ -77,7 +77,13 @@ export default class ReadMessage extends Component {
    }
 
    setVolume(params) {
-      if (!params[0]) return `Current volume: ${this.volume}. Usage: !read volume [0-2]`;
+      if (!params[0]) return `Current volume: ${this.volume}. Usage: !read volume [0-2/default]`;
+
+      if (params[0] === "default") {
+         this.volume = readMessageConfig.defaultVolume;
+         this.read("System", `Volume reset to default (${this.volume})`, "en");
+         return `Volume reset to default (${this.volume})`;
+      }
 
       let volume = Number(params[0]);
       if (isNaN(volume)) return "Invalid volume value";
@@ -85,6 +91,7 @@ export default class ReadMessage extends Component {
       if (volume > 2) return "Invalid volume value";
       this.volume = volume;
 
+      this.read("System", `Volume set to ${volume}`, "en");
       return `Volume set to ${volume}`;
    }
 

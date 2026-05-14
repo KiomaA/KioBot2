@@ -21,7 +21,7 @@ export default class YoutubeiLiveChat extends Component {
       if (!params[0]) {
          this.messageHandler.chatClient.say(
             this.messageHandler.defaultChannel,
-            "Video ID required",
+            "Usage: !yi connect [videoId]",
          );
          return;
       }

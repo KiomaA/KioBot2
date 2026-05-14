@@ -132,9 +132,14 @@ export default class QueueMahjong extends Component {
 
    start5ma(client, messageHandler) {
       if (this.enabled5ma) {
-         client.say(messageHandler.defaultChannel, `對唔住喎冇五麻呢樣嘢，最多咪俾個5ma你囉 <3`);
          if (this.soundFile5ma) {
+            client.say(messageHandler.defaultChannel, `對唔住喎冇五麻呢樣嘢，最多咪俾個5ma你囉 <3`);
             this.io.emit("autoreply", { file: this.soundFile5ma });
+         } else {
+            client.say(
+               messageHandler.defaultChannel,
+               `Sorry, 5ma sound file not found. Please change environment variables. <3`,
+            );
          }
       }
    }

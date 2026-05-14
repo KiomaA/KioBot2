@@ -30,6 +30,9 @@ const config = {
       maxLength: process.env.READ_MESSAGE_MAX_LENGTH
          ? parseInt(process.env.READ_MESSAGE_MAX_LENGTH)
          : 300,
+      defaultVolume: process.env.READ_MESSAGE_DEFAULT_VOLUME
+         ? parseFloat(process.env.READ_MESSAGE_DEFAULT_VOLUME)
+         : 0.7,
    },
 
    twitch: {
@@ -59,7 +62,11 @@ const config = {
    },
 
    timer: {
-      soundFile: process.env.TIMER_SOUND_FILE,
+      soundFile: process.env.TIMER_SOUND_FILE || "",
+   },
+
+   autoreply: {
+      testSoundFile: process.env.AUTOREPLY_TEST_SOUND_FILE || "",
    },
 };
 export default config;
